@@ -9,7 +9,10 @@ def generate_random_id(length=16):
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ('name', 'email', 'phone', 'age', 'income', 'job')
+        fields = ('customerID', 'name', 'email', 'phone', 'age', 'income', 'job')
+        extra_kwargs = {
+            'customerID': {'read_only': True}  # Make customerID read-only
+        }
   
     def create(self, validated_data):
         validated_data['customerID'] = generate_random_id()

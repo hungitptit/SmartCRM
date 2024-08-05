@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ox(m88c2r^$anf31=&ko)u&#zy64_5r(5(dlw+rxdk@vk-hl-#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['smartcrm-4b938bcf74e9.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['smartcrm-4b938bcf74e9.herokuapp.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
