@@ -1,5 +1,5 @@
 django
-numpy==1.19.5
+numpy==1.22.0
 djangorestframework
 gunicorn
 whitenoise
