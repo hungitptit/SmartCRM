@@ -1,2 +1,2 @@
 python3 manage.py migrate
-web: gunicorn SmartCrm.wsgi
+web: gunicorn smartcrm.wsgi
