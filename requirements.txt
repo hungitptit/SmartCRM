@@ -2,3 +2,4 @@ django
 numpy==1.19.5
 djangorestframework
 gunicorn
+whitenoise
