@@ -66,7 +66,6 @@ class UserRegistrationSerializer(RegisterSerializer):
         user.active = self.cleaned_data.get('active')
         user.save()
         adapter.save_user(request, user, self)
-        print("department", self.cleaned_data.get('departmentID'))
         employee_data = {
             'departmentID': self.cleaned_data.get('departmentID'),
             'address': self.cleaned_data.get('address'),
