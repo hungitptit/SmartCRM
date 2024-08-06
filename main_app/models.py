@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -10,16 +11,17 @@ class Department(models.Model):
         return self.departmentName
 
 class Employee(models.Model):
-    employeeID = models.CharField(max_length=255, primary_key=True)
-    departmentID = models.ForeignKey(Department, on_delete=models.CASCADE)
-    address = models.CharField(max_length=255)
-    email = models.EmailField()
-    phone = models.CharField(max_length=20)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    employeeID = models.CharField(max_length=100, primary_key=True)
+    departmentID = models.CharField(max_length=100)
+    address = models.CharField(max_length=255, null=True)
+    email = models.EmailField(null=True)
+    phone = models.CharField(max_length=15, null=True)
     position = models.CharField(max_length=100)
-    active = models.BooleanField()
+    active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.email
+        return self.user.username
 
 class Customer(models.Model):
     customerID = models.CharField(max_length=255, primary_key=True)
