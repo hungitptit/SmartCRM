@@ -35,7 +35,7 @@ class EmployeeDistrict(models.Model):
     districtID = models.ForeignKey(District, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.employee.user.username} - {self.district.name}"
+        return f"{self.employeeID.user.username} - {self.districtID.name}"
     
 class Customer(models.Model):
     customerID = models.CharField(max_length=255, primary_key=True)
