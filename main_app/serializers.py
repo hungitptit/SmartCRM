@@ -1,15 +1,18 @@
 from rest_framework import serializers
 from .models import Customer, Employee
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 import string
 import random
 from rest_auth.registration.serializers import RegisterSerializer
 from allauth.account.adapter import get_adapter
+from rest_framework.permissions import IsAuthenticated
 
 def generate_random_id(length=16):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 class CustomerSerializer(serializers.ModelSerializer):
+    permission_classes = [IsAuthenticated]
+
     class Meta:
         model = Customer
         fields = ('customerID', 'name', 'email', 'phone', 'age', 'income', 'job')
@@ -64,7 +67,6 @@ class UserRegistrationSerializer(RegisterSerializer):
         user.phone = self.cleaned_data.get('phone')
         user.position = self.cleaned_data.get('position')
         user.active = self.cleaned_data.get('active')
-        user.save()
         adapter.save_user(request, user, self)
         employee_data = {
             'departmentID': self.cleaned_data.get('departmentID'),
@@ -75,8 +77,10 @@ class UserRegistrationSerializer(RegisterSerializer):
             'email': self.cleaned_data.get('email'),
             'employeeID': generate_random_id()
         }
-        print(employee_data)
         Employee.objects.create(user=user, **employee_data)
+        group = Group.objects.filter(name='sale_agent')
+        user.groups.add(group[0])
+        user.save()
         return user
 
 
