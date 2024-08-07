@@ -45,7 +45,7 @@ class Customer(models.Model):
     age = models.PositiveIntegerField(null=True)
     income = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     job = models.CharField(max_length=100, null=True)
-
+    createdBy = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
     def __str__(self):
         return self.name
 

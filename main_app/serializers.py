@@ -6,6 +6,8 @@ import random
 from rest_auth.registration.serializers import RegisterSerializer
 from allauth.account.adapter import get_adapter
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.authtoken.models import Token
 
 def generate_random_id(length=16):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -19,15 +21,56 @@ class CustomerSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'customerID': {'read_only': True}  # Make customerID read-only
         }
-  
+
+    def get_queryset(self):
+        # Extract token from the Authorization header
+        auth_header = self.request.headers.get('Authorization', '')
+        token_key = auth_header.replace('Token ', '')
+
+        if not token_key:
+            raise AuthenticationFailed('Token is missing')
+
+        try:
+            token = Token.objects.get(key=token_key)
+            user = token.user
+            employee = Employee.objects.get(user=user)
+        except Token.DoesNotExist:
+            raise AuthenticationFailed('Invalid token')
+        except Employee.DoesNotExist:
+            return Customer.objects.none()
+
+        return Customer.objects.filter(createdBy=employee)
+
     def create(self, validated_data):
-        validated_data['customerID'] = generate_random_id()
+        request = self.context.get('request')
+        if not request:
+            raise serializers.ValidationError('Request context is required to access the token.')
+
+        # Extract token from the Authorization header
+        auth_header = request.headers.get('Authorization', '')
+        token_key = auth_header.replace('Token ', '')
+
+        if not token_key:
+            raise AuthenticationFailed('Token is missing')
+
+        try:
+            token = Token.objects.get(key=token_key)
+            user = token.user
+            employee = Employee.objects.get(user=user)
+        except Token.DoesNotExist:
+            raise AuthenticationFailed('Invalid token')
+        except Employee.DoesNotExist:
+            raise serializers.ValidationError('Employee does not exist for the given token.')
+
+        validated_data['createdBy'] = employee
+        validated_data['customerID'] = generate_random_id() 
+
         return super().create(validated_data)
     
     def validate(self, data):
         # Custom validation logic
-        if 'name' not in data:
-            raise serializers.ValidationError("Name is required.")
+        if 'phone' not in data:
+            raise serializers.ValidationError("Phone is required.")
         return data
     
 
