@@ -42,7 +42,7 @@ class UserRegistrationSerializer(RegisterSerializer):
         model = Employee
         fields = ['username', 'email', 'departmentID', 'address', 'phone', 'position', 'active']
     
-    # override get_cleaned_data of RegisterSerializer
+    # Override get_cleaned_data of RegisterSerializer
     def get_cleaned_data(self):
         return {
             'username': self.validated_data.get('username', ''),
@@ -57,7 +57,7 @@ class UserRegistrationSerializer(RegisterSerializer):
             'active': self.validated_data.get('active'),
         }
 
-    # override save method of RegisterSerializer
+    # Override save method of RegisterSerializer
     def save(self, request):
         adapter = get_adapter()
         user = adapter.new_user(request)
@@ -78,6 +78,7 @@ class UserRegistrationSerializer(RegisterSerializer):
             'employeeID': generate_random_id()
         }
         Employee.objects.create(user=user, **employee_data)
+        # Default group permission
         group = Group.objects.filter(name='sale_agent')
         user.groups.add(group[0])
         user.save()
