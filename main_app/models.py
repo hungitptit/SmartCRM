@@ -2,6 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
+class District(models.Model):
+    districtID = models.CharField(max_length=100, primary_key=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class Department(models.Model):
     departmentID = models.CharField(max_length=255, primary_key=True)
@@ -13,7 +19,7 @@ class Department(models.Model):
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     employeeID = models.CharField(max_length=100, primary_key=True)
-    departmentID = models.CharField(max_length=100)
+    departmentID = models.ForeignKey(Department, on_delete=models.DO_NOTHING)
     address = models.CharField(max_length=255, null=True)
     email = models.EmailField(null=True)
     phone = models.CharField(max_length=15, null=True)
@@ -22,7 +28,15 @@ class Employee(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+class EmployeeDistrict(models.Model):
+    employeeDistrictID = models.CharField(max_length=100, primary_key=True)
+    employeeID = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    districtID = models.ForeignKey(District, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.employee.user.username} - {self.district.name}"
+    
 class Customer(models.Model):
     customerID = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)

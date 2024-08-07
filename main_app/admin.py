@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Department, Employee, Customer, Course, EmployeeCourse, Schedule, CustomerInteraction, Lead, ApartmentOwner, Apartment, Recommendation
+from .models import Department, Employee, Customer, Course, EmployeeCourse, Schedule, CustomerInteraction, Lead, ApartmentOwner, Apartment, Recommendation, District, EmployeeDistrict
 
 # Register your models here.
 @admin.register(Department)
@@ -45,3 +45,11 @@ class ApartmentAdmin(admin.ModelAdmin):
 @admin.register(Recommendation)
 class RecommendationAdmin(admin.ModelAdmin):
     list_display = ('recommendationID', 'apartmentID', 'customerID', 'confidence')
+
+@admin.register(District)
+class DistrictAdmin(admin.ModelAdmin):
+    list_display = ('districtID', 'name')
+
+@admin.register(EmployeeDistrict)
+class EmployeeDistrictAdmin(admin.ModelAdmin):
+    list_display = ('employeeDistrictID', 'employeeID', 'districtID')
