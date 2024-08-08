@@ -22,25 +22,6 @@ class CustomerSerializer(serializers.ModelSerializer):
             'customerID': {'read_only': True}  # Make customerID read-only
         }
 
-    def get_queryset(self):
-        # Extract token from the Authorization header
-        auth_header = self.request.headers.get('Authorization', '')
-        token_key = auth_header.replace('Token ', '')
-
-        if not token_key:
-            raise AuthenticationFailed('Token is missing')
-
-        try:
-            token = Token.objects.get(key=token_key)
-            user = token.user
-            employee = Employee.objects.get(user=user)
-        except Token.DoesNotExist:
-            raise AuthenticationFailed('Invalid token')
-        except Employee.DoesNotExist:
-            return Customer.objects.none()
-
-        return Customer.objects.filter(createdBy=employee)
-
     def create(self, validated_data):
         request = self.context.get('request')
         if not request:
